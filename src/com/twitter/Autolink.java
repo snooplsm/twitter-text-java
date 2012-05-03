@@ -129,6 +129,21 @@ public class Autolink {
     builder.append(mention).append("</a>");
   }
 
+	public int countActualLength(String text) {
+		List<Entity> entities = extractor.extractURLsWithIndices(text);
+		int calcLen = text.length();
+		for(int i = entities.size()-1; i>-1;i--) {
+			Entity entity = entities.get(i);
+			int len = entity.end-entity.start;
+			if(len>=linkLength) {
+				calcLen-=(len-linkLength);
+			} else {
+				calcLen+=(linkLength-len);
+			}
+		}
+		return calcLen;
+	}
+
   public void linkToURL(Entity entity, String text, StringBuilder builder) {
     CharSequence url = escapeHTML(entity.getValue());
     CharSequence linkText = url;
